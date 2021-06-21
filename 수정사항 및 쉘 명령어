@@ -1,0 +1,25 @@
+<설명>
+stride16, reverse separable conv 추가
+초기 모델은 마지막 3*3 conv의 in_channels는 304고 나머지 3*3 conv의 in_channels는 320 이다.
+그래서 if문에 module.in_channels == 320 조건을 추가하여 마지막 conv는 Atrous separable conv로 변경하지 않도록
+해주었다. 대신 304 3*3 conv는
+<수정 파일>
+network 폴더의 _deeplab.py, modeling.py
+
+_deeplab.py
+40 ~ 46번째 줄
+reverse separable conv 추가 
+
+174번째 줄
+초기 모델은 마지막 3*3 conv의 in_channels는 304고 나머지 3*3 conv의 in_channels는 320 이다.
+그래서 if문에 module.in_channels == 320 조건을 추가하여 마지막 conv는 Atrous separable conv로 변경하지 않도록
+해주었다. 
+
+
+<쉘 명령어 >
+python main_sia_3.py --enable_vis --vis_port 28333 --lr 0.1 --gpu_id 0 --crop_size 512 --output_stride 16 --batch_size 8 --dataset satellites_multi --data_root ./datasets/data/SIA/multi --separable_conv
+
+<이어서 학습>
+python main_sia_3.py --enable_vis --vis_port 28333 --lr 0.1 --gpu_id 0 --crop_size 512 --output_stride 16 --batch_size 8 --dataset satellites_multi --data_root ./datasets/data/SIA/multi --separable_conv --continue_training --ckpt ./checkpoints/best_deeplabv3plus_mobilenet_satellites_multi_os16_multi_last.pth
+
+
